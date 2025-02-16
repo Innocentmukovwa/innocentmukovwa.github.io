@@ -65,9 +65,11 @@ def write_to_csv(data):
 @app.route('/submit_form', methods=['POST', 'GET'])
 def submit_form():
     if request.method == 'POST':
-        data = request.form.to_dict()
-        write_to_csv(data)
-        print()
-        return redirect("/thankyou")
+        try:
+            data = request.form.to_dict()
+            write_to_csv(data)
+            return redirect("/thankyou")
+        except Exception as e:
+            print(f"something went wrong{e}")
     else:
-        return "something went wrong"
+        return "something went wrong again"
