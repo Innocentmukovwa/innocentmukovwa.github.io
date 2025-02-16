@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, make_response
 import csv
 
 app = Flask(__name__)
@@ -7,7 +7,9 @@ print(__name__)
 
 @app.route("/")
 def my_home():
-    return render_template("index.html")
+    resp = make_response(render_template("index.html"))
+    resp.set_cookie('username', 'email=username')
+    return resp
 
 
 @app.route("/about_me")
@@ -72,4 +74,4 @@ def submit_form():
         except Exception as e:
             print(f"something went wrong{e}")
     else:
-        return "something went wrong again"
+        return "something went wrong! Try again."
