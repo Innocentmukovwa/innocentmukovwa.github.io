@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect
+import csv
 
 app = Flask(__name__)
+print(__name__)
 
 
 @app.route("/")
@@ -39,16 +41,32 @@ def write_to_file(data):
             email = data["email"]
             subject = data["subject"]
             message = data["message"]
-            database.write(f'\n{email},{subject},{message}')
+            database.write(f"\n{email},{subject},{message}")
             print("Write success!")
     except Exception as e:
         print(f"Error writing to file: {e}")
 
-@app.route("/submit_form", methods=['POST', 'GET'])
+
+def write_to_csv(data):
+    try:
+        with open('database.csv', mode='a',  newline='', encoding='utf-8') as database2:
+            email = data["email"]
+            subject = data["subject"]
+            message = data["message"]
+            csv_writer = csv.writer(
+                database2, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL
+            )
+            csv_writer.writerow([email, subject, message])
+            print("Write success!")
+    except Exception as e:
+        print(f"Error writing to file: {e}")
+
+
+@app.route('/submit_form', methods=['POST', 'GET'])
 def submit_form():
     if request.method == 'POST':
         data = request.form.to_dict()
-        write_to_file(data)
+        write_to_csv(data)
         print()
         return redirect("/thankyou")
     else:
